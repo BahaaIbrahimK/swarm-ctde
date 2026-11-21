@@ -27,8 +27,27 @@ from ctde.envs.formation_aviary import FormationAviary
 from ctde.metrics import EpisodeRecorder
 
 
-def _roll(action_fn, seeds, gust_std=3.0):
-    """Run episodes through the REAL env and return (mean return, mean RMS, crashes)."""
+def _configured_gust_std() -> float:
+    """The gust strength the experiment actually uses (single source of truth)."""
+    from ctde.models.observability import build_ladder
+    from ctde.training.trainer import RunConfig
+
+    return RunConfig(level=build_ladder(4)[0]).gust_std_ms
+
+
+def _roll(action_fn, seeds, gust_std=None):
+    """Run episodes through the REAL env and return (mean return, mean RMS, crashes).
+
+    `gust_std` defaults to the CONFIGURED value. It used to be hardcoded to 3.0,
+    a level abandoned in the Sep 2026 recalibration because the PID alone
+    crashes ~1 in 4 episodes there. Asserting "zero PID crashes" at sigma=3.0
+    then depended on which 4 episodes were drawn, and on floating-point
+    details of the machine: it passed on the original WSL machine and failed
+    on the GitHub Actions runner. Same lesson as HANDOFF.md section A: a
+    recalibration that never reached every caller.
+    """
+    if gust_std is None:
+        gust_std = _configured_gust_std()
     returns, rms, crashes = [], [], 0
     for seed in seeds:
         env = FormationAviary(
