@@ -11,6 +11,7 @@ on quadrotors that physically interact through aerodynamic downwash.**
 ![Simulator](https://img.shields.io/badge/sim-gym--pybullet--drones-4B8BBE)
 ![Algorithm](https://img.shields.io/badge/algorithm-MAPPO-6f42c1)
 ![Status](https://img.shields.io/badge/status-active%20research-orange)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 </div>
 
@@ -374,3 +375,7 @@ a controlled experimental design.
 
 If you use this code, please cite it with the metadata in
 [`CITATION.cff`](CITATION.cff).
+
+## License
+
+Released under the [MIT License](LICENSE). © 2026 Bahaa Ibrahim.

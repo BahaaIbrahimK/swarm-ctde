@@ -13,6 +13,7 @@ authors:
     affiliation: "King Fahd University of Petroleum & Minerals (KFUPM)"
 repository-code: "https://github.com/BahaaIbrahimK/swarm-ctde"
 type: software
+license: MIT
 keywords:
   - multi-agent reinforcement learning
   - CTDE
