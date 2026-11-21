@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" width="1200" height="650" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>System architecture: decentralized execution and centralized training</title>
+  <defs>
+    <filter id="sh" x="-10%" y="-10%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+    <linearGradient id="wash" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b82f6" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#3b82f6" stop-opacity="0.02"/>
+    </linearGradient>
+    <marker id="aD" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+    <marker id="aB" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="aV" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+    </marker>
+    <marker id="aO" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d97706"/>
+    </marker>
+    <g id="dr">
+      <line x1="-26" y1="0" x2="26" y2="0" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="-26" cy="-3.5" rx="12" ry="3" fill="#94a3b8" fill-opacity="0.6" stroke="#475569" stroke-width="1"/>
+      <ellipse cx="26" cy="-3.5" rx="12" ry="3" fill="#94a3b8" fill-opacity="0.6" stroke="#475569" stroke-width="1"/>
+      <rect x="-8" y="-5" width="16" height="10" rx="3" fill="#475569"/>
+    </g>
+  </defs>
+
+  <rect x="1" y="1" width="1198" height="648" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <!-- Header -->
+  <text x="32" y="44" font-size="20" font-weight="700" fill="#0f172a">System architecture</text>
+  <text x="32" y="66" font-size="13" fill="#64748b">Centralized training with decentralized execution, on a physically coupled quadrotor chain</text>
+  <g font-size="12" fill="#334155">
+    <line x1="880" y1="40" x2="912" y2="40" stroke="#2563eb" stroke-width="2.4" marker-end="url(#aB)"/>
+    <text x="920" y="44">runs on the drone</text>
+    <line x1="880" y1="62" x2="912" y2="62" stroke="#7c3aed" stroke-width="2.4" stroke-dasharray="6 4" marker-end="url(#aV)"/>
+    <text x="920" y="66">training only, then discarded</text>
+  </g>
+
+  <!-- ===================== ENVIRONMENT ===================== -->
+  <rect x="30" y="104" width="270" height="516" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="50" y="134" font-size="15" font-weight="700" fill="#0f172a">Environment</text>
+  <text x="50" y="153" font-size="12" fill="#64748b">FormationAviary · gym-pybullet-drones</text>
+
+  <polygon points="146,203 184,203 196,262 134,262" fill="url(#wash)"/>
+  <polygon points="146,283 184,283 196,342 134,342" fill="url(#wash)"/>
+  <polygon points="146,363 184,363 196,422 134,422" fill="url(#wash)"/>
+  <use href="#dr" x="165" y="198"/>
+  <use href="#dr" x="165" y="278"/>
+  <use href="#dr" x="165" y="358"/>
+  <use href="#dr" x="165" y="438"/>
+  <rect x="157" y="193" width="16" height="10" rx="3" fill="#1d4ed8"/>
+  <g font-size="11" fill="#475569">
+    <text x="206" y="202">leader</text>
+    <text x="206" y="282">follower</text>
+    <text x="206" y="362">follower</text>
+    <text x="206" y="442">follower</text>
+  </g>
+  <g stroke="#d97706" stroke-width="2" fill="none" marker-end="url(#aO)">
+    <path d="M46,238 q9,-6 18,0 t18,0 t18,0 l14,0"/>
+    <path d="M46,318 q9,-6 18,0 t18,0 t18,0 l14,0"/>
+    <path d="M46,398 q9,-6 18,0 t18,0 t18,0 l14,0"/>
+  </g>
+
+  <g font-size="12" fill="#334155">
+    <line x1="50" y1="478" x2="280" y2="478" stroke="#e2e8f0"/>
+    <text x="50" y="502"><tspan font-weight="700">Physics</tspan>  240 Hz · control 48 Hz</text>
+    <text x="50" y="524"><tspan font-weight="700">Coupling</tspan>  rotor downwash</text>
+    <text x="50" y="546"><tspan font-weight="700" fill="#b45309">Gusts</tspan>  OU field, unobserved</text>
+    <text x="50" y="568"><tspan font-weight="700">Episode</tspan>  15 s · 720 steps</text>
+    <text x="50" y="590"><tspan font-weight="700">Ends</tspan>  crash, collision or time</text>
+  </g>
+
+  <!-- ===================== EXECUTION LANE ===================== -->
+  <rect x="340" y="104" width="830" height="232" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="362" y="134" font-size="15" font-weight="700" fill="#1e3a8a">Decentralized execution</text>
+  <rect x="560" y="120" width="140" height="22" rx="11" fill="#dbeafe"/>
+  <text x="630" y="135" font-size="11.5" font-weight="600" fill="#1d4ed8" text-anchor="middle">deployed on each drone</text>
+  <text x="1150" y="135" font-size="12" fill="#3b82f6" text-anchor="end">the policy decides where to aim · the PID keeps it flying</text>
+
+  <!-- obs chip -->
+  <g filter="url(#sh)">
+    <rect x="362" y="178" width="140" height="92" rx="12" fill="#ffffff" stroke="#93c5fd"/>
+  </g>
+  <text x="432" y="204" font-size="12.5" font-weight="700" fill="#0f172a" text-anchor="middle">Local observation</text>
+  <rect x="397" y="214" width="70" height="22" rx="6" fill="#dbeafe"/>
+  <text x="432" y="230" font-size="13" font-weight="700" fill="#1d4ed8" text-anchor="middle">oᵢ ∈ ℝ¹³</text>
+  <text x="432" y="254" font-size="10.5" fill="#64748b" text-anchor="middle">gap · attitude · velocity</text>
+
+  <!-- actor stack -->
+  <rect x="546" y="190" width="160" height="92" rx="12" fill="#bfdbfe" opacity="0.55"/>
+  <rect x="540" y="184" width="160" height="92" rx="12" fill="#bfdbfe" opacity="0.8"/>
+  <g filter="url(#sh)">
+    <rect x="534" y="178" width="160" height="92" rx="12" fill="#2563eb"/>
+  </g>
+  <text x="614" y="208" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">Shared actor π<tspan baseline-shift="sub" font-size="10">θ</tspan></text>
+  <text x="614" y="229" font-size="11.5" fill="#dbeafe" text-anchor="middle">MLP · tanh-Gaussian</text>
+  <text x="614" y="250" font-size="11.5" fill="#dbeafe" text-anchor="middle">same weights × N drones</text>
+
+  <!-- action chip -->
+  <g filter="url(#sh)">
+    <rect x="730" y="178" width="128" height="92" rx="12" fill="#ffffff" stroke="#93c5fd"/>
+  </g>
+  <text x="794" y="204" font-size="12.5" font-weight="700" fill="#0f172a" text-anchor="middle">Setpoint offset</text>
+  <rect x="759" y="214" width="70" height="22" rx="6" fill="#dbeafe"/>
+  <text x="794" y="230" font-size="13" font-weight="700" fill="#1d4ed8" text-anchor="middle">aᵢ ∈ ℝ³</text>
+  <text x="794" y="254" font-size="10.5" fill="#64748b" text-anchor="middle">slot + 0.2 m · aᵢ</text>
+
+  <!-- PID -->
+  <g filter="url(#sh)">
+    <rect x="890" y="178" width="140" height="92" rx="12" fill="#ffffff" stroke="#93c5fd"/>
+  </g>
+  <text x="960" y="204" font-size="12.5" font-weight="700" fill="#0f172a" text-anchor="middle">DSL PID cascade</text>
+  <rect x="908" y="216" width="104" height="18" rx="5" fill="#f1f5f9"/>
+  <text x="960" y="229" font-size="11" fill="#334155" text-anchor="middle">position loop</text>
+  <rect x="908" y="240" width="104" height="18" rx="5" fill="#f1f5f9"/>
+  <text x="960" y="253" font-size="11" fill="#334155" text-anchor="middle">attitude loop</text>
+
+  <!-- rotors -->
+  <g filter="url(#sh)">
+    <rect x="1062" y="178" width="88" height="92" rx="12" fill="#ffffff" stroke="#93c5fd"/>
+  </g>
+  <text x="1106" y="210" font-size="12.5" font-weight="700" fill="#0f172a" text-anchor="middle">Rotors</text>
+  <text x="1106" y="232" font-size="11" fill="#64748b" text-anchor="middle">4 × RPM</text>
+  <text x="1106" y="250" font-size="11" fill="#64748b" text-anchor="middle">per drone</text>
+
+  <g stroke="#2563eb" stroke-width="2.2" fill="none" marker-end="url(#aB)">
+    <line x1="502" y1="224" x2="530" y2="224"/>
+    <line x1="700" y1="224" x2="726" y2="224"/>
+    <line x1="858" y1="224" x2="886" y2="224"/>
+    <line x1="1030" y1="224" x2="1058" y2="224"/>
+  </g>
+
+  <!-- env -> obs -->
+  <line x1="300" y1="224" x2="358" y2="224" stroke="#2563eb" stroke-width="2.2" marker-end="url(#aB)"/>
+  <!-- rotors -> env (loop over the top) -->
+  <path d="M1106,178 V 90 H 165 V 100" fill="none" stroke="#2563eb" stroke-width="2.2" marker-end="url(#aB)"/>
+  <rect x="566" y="80" width="208" height="20" rx="10" fill="#ffffff"/>
+  <text x="670" y="94" font-size="11.5" fill="#2563eb" text-anchor="middle" font-weight="600">thrust → physics step</text>
+
+  <!-- ===================== TRAINING LANE ===================== -->
+  <rect x="340" y="388" width="830" height="232" rx="14" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="362" y="418" font-size="15" font-weight="700" fill="#4c1d95">Centralized training</text>
+  <rect x="530" y="404" width="160" height="22" rx="11" fill="#ede9fe"/>
+  <text x="610" y="419" font-size="11.5" font-weight="600" fill="#6d28d9" text-anchor="middle">discarded after training</text>
+  <text x="1150" y="419" font-size="12" fill="#7c3aed" text-anchor="end">k is the only thing that changes</text>
+
+  <!-- global state -->
+  <g filter="url(#sh)">
+    <rect x="362" y="458" width="140" height="96" rx="12" fill="#ffffff" stroke="#c4b5fd"/>
+  </g>
+  <text x="432" y="485" font-size="12.5" font-weight="700" fill="#0f172a" text-anchor="middle">Global state</text>
+  <text x="432" y="506" font-size="11" fill="#64748b" text-anchor="middle">all positions</text>
+  <text x="432" y="522" font-size="11" fill="#64748b" text-anchor="middle">all velocities</text>
+  <text x="432" y="538" font-size="11" fill="#b45309" text-anchor="middle">wind at each drone</text>
+
+  <!-- ladder selector -->
+  <g filter="url(#sh)">
+    <rect x="534" y="458" width="196" height="96" rx="12" fill="#ffffff" stroke="#c4b5fd"/>
+  </g>
+  <text x="632" y="482" font-size="12.5" font-weight="700" fill="#0f172a" text-anchor="middle">Observability ladder</text>
+  <text x="632" y="500" font-size="11" fill="#64748b" text-anchor="middle">rank by downwash influence</text>
+  <!-- mini slot bar -->
+  <rect x="560" y="512" width="62" height="16" rx="3" fill="#2563eb"/>
+  <rect x="624" y="512" width="30" height="16" rx="3" fill="#0d9488"/>
+  <rect x="656" y="512" width="30" height="16" rx="3" fill="#e2e8f0"/>
+  <rect x="688" y="512" width="16" height="16" rx="3" fill="#e2e8f0"/>
+  <text x="632" y="546" font-size="11" fill="#64748b" text-anchor="middle">keep top-k · zero-pad the rest</text>
+
+  <!-- critic -->
+  <g filter="url(#sh)">
+    <rect x="762" y="458" width="180" height="96" rx="12" fill="#7c3aed"/>
+  </g>
+  <text x="852" y="486" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">Critic V<tspan baseline-shift="sub" font-size="10">φ</tspan>(s | k)</text>
+  <text x="852" y="508" font-size="11.5" fill="#ede9fe" text-anchor="middle">28 → 64 → 256 → 256 → 1</text>
+  <text x="852" y="528" font-size="11.5" fill="#ede9fe" text-anchor="middle">84,545 params at every k</text>
+
+  <!-- update -->
+  <g filter="url(#sh)">
+    <rect x="974" y="458" width="176" height="96" rx="12" fill="#ffffff" stroke="#c4b5fd"/>
+  </g>
+  <text x="1062" y="486" font-size="12.5" font-weight="700" fill="#0f172a" text-anchor="middle">MAPPO update</text>
+  <text x="1062" y="507" font-size="11" fill="#64748b" text-anchor="middle">GAE (γ 0.99, λ 0.95)</text>
+  <text x="1062" y="523" font-size="11" fill="#64748b" text-anchor="middle">PPO-clip 0.2</text>
+  <text x="1062" y="539" font-size="11" fill="#64748b" text-anchor="middle">value normalization</text>
+
+  <g stroke="#7c3aed" stroke-width="2.2" fill="none" stroke-dasharray="6 4" marker-end="url(#aV)">
+    <line x1="300" y1="506" x2="358" y2="506"/>
+    <line x1="502" y1="506" x2="530" y2="506"/>
+    <line x1="730" y1="506" x2="758" y2="506"/>
+    <line x1="942" y1="506" x2="970" y2="506"/>
+    <!-- update -> actor -->
+    <path d="M1062,458 V 362 H 614 V 284"/>
+  </g>
+  <rect x="694" y="352" width="196" height="20" rx="10" fill="#ffffff"/>
+  <text x="792" y="366" font-size="11.5" fill="#7c3aed" text-anchor="middle" font-weight="600">advantages → policy gradient</text>
+
+  <text x="362" y="600" font-size="11.5" fill="#6b7280">Held fixed across every k: actor, critic size, sample budget, hyperparameters, evaluation episodes.</text>
+</svg>

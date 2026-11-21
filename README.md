@@ -86,49 +86,14 @@ predicts **where**: near the measured **coupling horizon**.
 
 ## System architecture
 
-### Training vs. execution
+<p align="center">
+  <img src="docs/assets/architecture.svg" alt="System architecture. Environment: a four-drone chain with downwash and unobserved gusts. Decentralized execution, deployed on each drone: local 13-D observation, shared actor, 3-D setpoint offset, PID position and attitude loops, rotors, back to physics. Centralized training, discarded after training: global state, observability ladder that ranks teammates by downwash influence and zero-pads beyond k, fixed-size critic, MAPPO update sending advantages back to the actor." width="100%">
+</p>
 
-```mermaid
-flowchart TB
-    subgraph ENV["FormationAviary · gym-pybullet-drones · 240 Hz physics / 48 Hz control"]
-        direction TB
-        L["Leader"] -- downwash --> F1["Follower 1"]
-        F1 -- downwash --> F2["Follower 2"]
-        F2 -- downwash --> F3["Follower 3"]
-        G(("OU gust field<br/>(unobserved)")) -.-> L & F1 & F2 & F3
-    end
-
-    subgraph EXEC["Decentralized execution · deployed"]
-        A["Shared actor π(a | oᵢ)<br/>tanh-squashed Gaussian"]
-        PID["DSL PID<br/>position + attitude loops"]
-    end
-
-    subgraph TRAIN["Centralized training · discarded after training"]
-        S["Ladder selector<br/>rank teammates by downwash influence,<br/>keep top k, zero-pad the rest"]
-        C["Critic V(s | k)<br/>fixed 28-D input · 84,545 params"]
-        U["MAPPO update<br/>GAE · PPO clip · value norm"]
-    end
-
-    ENV -- "local obs oᵢ (13-D)" --> A
-    A -- "setpoint offset (3-D, ±0.2 m)" --> PID
-    PID -- "rotor RPMs" --> ENV
-    ENV -. "global state + wind" .-> S --> C --> U
-    U -. "advantages" .-> A
-```
-
-### The three-layer control stack
-
-The policy works at the **guidance** level, which is how deployed drone stacks are
+The policy works at the **guidance** level: it decides where each drone should aim,
+and a PID cascade keeps the drone flying. This is how deployed drone stacks are
 built. Direct rotor control was tried first (task `v1-raw4d`) and proved unlearnable
 from scratch.
-
-```mermaid
-flowchart LR
-    O["13-D local observation<br/>gap error · attitude · relative velocity<br/>angular rate · role flag"] --> P["RL policy<br/>(guidance)"]
-    P -- "offset from formation slot" --> T["target = slot + 0.2 m × a"]
-    T --> PL["PID position loop"] --> AL["PID attitude loop"] --> R["Rotor RPMs"] --> PH["PyBullet physics<br/>+ downwash + drag + gusts"]
-    PH -. "next state" .-> O
-```
 
 | | |
 |---|---|
