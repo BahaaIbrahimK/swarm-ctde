@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using these metadata."
+title: "Swarm CTDE: How Much Should a Centralized Critic See?"
+abstract: >-
+  Research code for a controlled study of critic observability in centralized
+  training with decentralized execution (CTDE). The number of teammates visible
+  to a MAPPO centralized critic is swept as an independent variable on a vertical
+  quadrotor chain coupled by aerodynamic downwash and stochastic gusts, with
+  actor, critic capacity, sample budget and evaluation episodes held fixed.
+authors:
+  - family-names: Ibrahim
+    given-names: Bahaa
+    affiliation: "King Fahd University of Petroleum & Minerals (KFUPM)"
+repository-code: "https://github.com/BahaaIbrahimK/swarm-ctde"
+type: software
+keywords:
+  - multi-agent reinforcement learning
+  - CTDE
+  - MAPPO
+  - centralized critic
+  - quadrotor swarm
+  - downwash
+  - gym-pybullet-drones

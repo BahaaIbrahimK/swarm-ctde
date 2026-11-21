@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>Overview: a vertical quadrotor chain under downwash and gusts, and the critic observability ladder</title>
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b82f6" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#3b82f6" stop-opacity="0.03"/>
+    </linearGradient>
+    <pattern id="pad" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#f1f5f9"/>
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#cbd5e1" stroke-width="3"/>
+    </pattern>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d97706"/>
+    </marker>
+    <marker id="ahs" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="ahb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3b82f6" fill-opacity="0.7"/>
+    </marker>
+    <g id="drone">
+      <line x1="-42" y1="0" x2="42" y2="0" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+      <ellipse cx="-42" cy="-5" rx="19" ry="4" fill="#94a3b8" fill-opacity="0.55" stroke="#475569" stroke-width="1.2"/>
+      <ellipse cx="42" cy="-5" rx="19" ry="4" fill="#94a3b8" fill-opacity="0.55" stroke="#475569" stroke-width="1.2"/>
+      <rect x="-13" y="-7" width="26" height="14" rx="4" fill="#475569"/>
+    </g>
+  </defs>
+
+  <!-- Card -->
+  <rect x="1" y="1" width="1198" height="598" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <line x1="545" y1="36" x2="545" y2="564" stroke="#e2e8f0" stroke-width="2"/>
+
+  <!-- ============================ PANEL A ============================ -->
+  <text x="36" y="52" font-size="19" font-weight="700" fill="#0f172a">A · The task</text>
+  <text x="36" y="74" font-size="13" fill="#64748b">A vertical quadrotor chain, coupled by downwash and shared gusts</text>
+
+  <!-- downwash cones (drawn first, behind drones) -->
+  <g>
+    <polygon points="195,121 305,121 330,222 170,222" fill="url(#wash)"/>
+    <polygon points="195,231 305,231 330,332 170,332" fill="url(#wash)"/>
+    <polygon points="195,341 305,341 330,442 170,442" fill="url(#wash)"/>
+    <polygon points="195,451 305,451 322,500 178,500" fill="url(#wash)" opacity="0.6"/>
+    <g stroke="#3b82f6" stroke-opacity="0.6" stroke-width="1.6" marker-end="url(#ahb)">
+      <line x1="228" y1="140" x2="228" y2="180"/><line x1="272" y1="140" x2="272" y2="180"/>
+      <line x1="228" y1="250" x2="228" y2="290"/><line x1="272" y1="250" x2="272" y2="290"/>
+      <line x1="228" y1="360" x2="228" y2="400"/><line x1="272" y1="360" x2="272" y2="400"/>
+    </g>
+  </g>
+
+  <!-- drones -->
+  <use href="#drone" x="250" y="115"/>
+  <use href="#drone" x="250" y="225"/>
+  <use href="#drone" x="250" y="335"/>
+  <use href="#drone" x="250" y="445"/>
+  <rect x="237" y="108" width="26" height="14" rx="4" fill="#1d4ed8"/>
+
+  <!-- drone labels -->
+  <g font-size="13.5" fill="#0f172a">
+    <text x="318" y="112" font-weight="700">Leader <tspan font-weight="400" fill="#64748b">· agent 0</tspan></text>
+    <text x="318" y="129" font-size="12" fill="#64748b">tracks a moving circle</text>
+    <text x="318" y="222" font-weight="700">Follower 1</text>
+    <text x="318" y="239" font-size="12" fill="#64748b">holds its gap to the drone above</text>
+    <text x="318" y="332" font-weight="700">Follower 2</text>
+    <text x="318" y="442" font-weight="700">Follower 3</text>
+  </g>
+
+  <!-- downwash label -->
+  <text x="338" y="282" font-size="12" fill="#2563eb" font-style="italic">downwash (rotor wake)</text>
+  <text x="338" y="298" font-size="12" fill="#2563eb" font-style="italic">pushes the drone below</text>
+
+  <!-- spacing dimension -->
+  <g stroke="#475569" stroke-width="1.3">
+    <line x1="150" y1="335" x2="150" y2="445" marker-start="url(#ahs)" marker-end="url(#ahs)"/>
+    <line x1="142" y1="335" x2="186" y2="335" stroke-dasharray="3 3"/>
+    <line x1="142" y1="445" x2="186" y2="445" stroke-dasharray="3 3"/>
+  </g>
+  <text x="140" y="386" font-size="13" font-weight="600" fill="#334155" text-anchor="end">Δ = 1.0 m</text>
+  <text x="140" y="402" font-size="11.5" fill="#64748b" text-anchor="end">spacing</text>
+
+  <!-- gusts -->
+  <g stroke="#d97706" stroke-width="2.2" fill="none" marker-end="url(#ah)">
+    <path d="M44,168 q14,-9 28,0 t28,0 t28,0 l24,0"/>
+    <path d="M44,278 q14,-9 28,0 t28,0 t28,0 l24,0"/>
+  </g>
+  <text x="38" y="200" font-size="12.5" font-weight="600" fill="#b45309">stochastic gusts</text>
+  <text x="38" y="216" font-size="11.5" fill="#b45309">OU field, σ = 2.5 m/s,</text>
+  <text x="38" y="231" font-size="11.5" fill="#b45309">spatially correlated</text>
+  <text x="38" y="246" font-size="11.5" fill="#b45309">(not observed)</text>
+
+  <!-- actor box -->
+  <rect x="36" y="508" width="482" height="56" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="52" y="531" font-size="13" font-weight="700" fill="#0f172a">Decentralized actor (shared weights)</text>
+  <text x="52" y="551" font-size="12.5" fill="#475569">own 13-D obs  →  3-D setpoint offset (±0.2 m)  →  PID  →  rotors</text>
+
+  <!-- ============================ PANEL B ============================ -->
+  <text x="576" y="52" font-size="19" font-weight="700" fill="#0f172a">B · The independent variable: k</text>
+  <text x="576" y="74" font-size="13" fill="#64748b">How many teammates the centralized critic may see (N = 4 shown)</text>
+
+  <!-- column headers -->
+  <g font-size="12" fill="#334155" text-anchor="middle" font-weight="600">
+    <text x="757" y="118">own observation · 13</text>
+    <text x="928" y="118">teammate 1 · 6</text>
+    <text x="1036" y="118">teammate 2 · 6</text>
+    <text x="1117" y="118">wind · 3</text>
+  </g>
+
+  <!-- row labels -->
+  <g font-size="15" font-weight="700" fill="#0f172a">
+    <text x="578" y="152">k0</text>
+    <text x="578" y="207">k1</text>
+    <text x="578" y="262">k2</text>
+    <text x="578" y="317">k2+P</text>
+  </g>
+
+  <!-- rows: own [640,874] t1 [874,982] t2 [982,1090] wind [1090,1144] -->
+  <g stroke="#ffffff" stroke-width="2">
+    <!-- k0 -->
+    <rect x="640" y="130" width="234" height="32" fill="#2563eb"/>
+    <rect x="874" y="130" width="108" height="32" fill="url(#pad)"/>
+    <rect x="982" y="130" width="108" height="32" fill="url(#pad)"/>
+    <rect x="1090" y="130" width="54" height="32" fill="url(#pad)"/>
+    <!-- k1 -->
+    <rect x="640" y="185" width="234" height="32" fill="#2563eb"/>
+    <rect x="874" y="185" width="108" height="32" fill="#0d9488"/>
+    <rect x="982" y="185" width="108" height="32" fill="url(#pad)"/>
+    <rect x="1090" y="185" width="54" height="32" fill="url(#pad)"/>
+    <!-- k2 -->
+    <rect x="640" y="240" width="234" height="32" fill="#2563eb"/>
+    <rect x="874" y="240" width="108" height="32" fill="#0d9488"/>
+    <rect x="982" y="240" width="108" height="32" fill="#0d9488"/>
+    <rect x="1090" y="240" width="54" height="32" fill="url(#pad)"/>
+    <!-- k2+P -->
+    <rect x="640" y="295" width="234" height="32" fill="#2563eb"/>
+    <rect x="874" y="295" width="108" height="32" fill="#0d9488"/>
+    <rect x="982" y="295" width="108" height="32" fill="#0d9488"/>
+    <rect x="1090" y="295" width="54" height="32" fill="#d97706"/>
+  </g>
+  <g font-size="12" fill="#94a3b8" text-anchor="middle" font-weight="600">
+    <text x="928" y="151">0</text><text x="1036" y="151">0</text><text x="1117" y="151">0</text>
+    <text x="1036" y="206">0</text><text x="1117" y="206">0</text>
+    <text x="1117" y="261">0</text>
+  </g>
+
+  <!-- arrow to critic -->
+  <line x1="892" y1="338" x2="892" y2="370" stroke="#475569" stroke-width="1.6" marker-end="url(#ahs)"/>
+  <text x="904" y="359" font-size="12" fill="#64748b">same 28-D input width at every rung</text>
+
+  <!-- critic box -->
+  <rect x="640" y="378" width="504" height="62" rx="10" fill="#eef2ff" stroke="#a5b4fc"/>
+  <text x="656" y="402" font-size="13.5" font-weight="700" fill="#1e1b4b">Centralized critic: identical at every rung (training only)</text>
+  <text x="656" y="424" font-size="12.5" fill="#3730a3">28 → 64 → 256 → 256 → 1   ·   84,545 parameters   ·   discarded after training</text>
+
+  <!-- notes -->
+  <g font-size="12.5" fill="#334155">
+    <circle cx="582" cy="470" r="3" fill="#64748b"/>
+    <text x="594" y="474">Teammates are ranked by <tspan font-weight="700">predicted downwash influence</tspan>, not index or distance.</text>
+    <circle cx="582" cy="496" r="3" fill="#64748b"/>
+    <text x="594" y="500">The chain predecessor is excluded: the actor already observes that gap.</text>
+    <circle cx="582" cy="522" r="3" fill="#64748b"/>
+    <text x="594" y="526">Zero-padding (hatched) holds input width and capacity exactly constant,</text>
+    <text x="594" y="543">so k changes <tspan font-weight="700">information only</tspan>, never network size.</text>
+  </g>
+</svg>

@@ -1,0 +1,69 @@
+# =============================================================================
+#  BASE CONFIGURATION
+# =============================================================================
+#  Settings shared by EVERY experiment in this project.
+#  Individual experiment configs inherit from this file using `_base_: base.yaml`
+#  and then override only what they need to change.
+#
+#  Charter reference: §7 (Standard of evidence), §13 (Simulator decision)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+#  PROJECT IDENTITY
+# -----------------------------------------------------------------------------
+project:
+  name: "swarm-ctde"
+  # Root directory for all outputs. Each run creates a timestamped subdirectory.
+  results_root: "results"
+
+# -----------------------------------------------------------------------------
+#  SIMULATION PHYSICS
+# -----------------------------------------------------------------------------
+#  We use gym-pybullet-drones (Charter §13). The decisive reason is that it
+#  implements a VALIDATED downwash model (Zhou / DSL). Downwash is the physical
+#  inter-agent coupling our entire hypothesis depends on -- see Charter §1.5.
+# -----------------------------------------------------------------------------
+physics:
+  # How often the physics engine integrates, in Hz.
+  # 240 Hz is the gym-pybullet-drones default and matches the Crazyflie
+  # system-identification work the simulator's parameters came from.
+  sim_freq_hz: 240
+
+  # How many physics steps happen per control step (per env.step() call).
+  #   control_freq = sim_freq_hz / aggregate_phy_steps = 240 / 5 = 48 Hz
+  # Physics must run much faster than control for numerical stability, but the
+  # policy does not need to act that often.
+  aggregate_phy_steps: 5
+
+  # Which aerodynamic effects to simulate.
+  #   pyb                -> plain rigid-body dynamics only
+  #   pyb_dw             -> rigid body + DOWNWASH only
+  #   pyb_gnd_drag_dw    -> ground effect + blade drag + DOWNWASH
+  # We REQUIRE downwash. Without it the coupling knob (Claim 2) does nothing
+  # and the whole experiment is empty.
+  mode: "pyb_gnd_drag_dw"
+
+  # Altitude (m) of the UPPER drone during the downwash probe.
+  # Must be high enough that the LOWER drone stays clear of GROUND EFFECT --
+  # a separate near-floor phenomenon that would contaminate the measurement.
+  # With separations up to 2.5 m, the upper drone needs to sit high.
+  probe_upper_altitude_m: 3.0
+
+# -----------------------------------------------------------------------------
+#  DRONE MODEL
+# -----------------------------------------------------------------------------
+drone:
+  # cf2x = Crazyflie 2.x in "X" rotor configuration.
+  # Chosen because KFUPM has physical Crazyflies -- Charter Claim 4 / Phase 8
+  # requires the simulated drone to match the real hardware.
+  model: "cf2x"
+
+# -----------------------------------------------------------------------------
+#  REPRODUCIBILITY
+# -----------------------------------------------------------------------------
+#  Charter §7: ">= 8 seeds everywhere, mean +/- 95% CI, always plotted".
+#  RL is highly stochastic; a single run is not evidence. See utils/seeding.py.
+# -----------------------------------------------------------------------------
+reproducibility:
+  seed: 0                    # base seed; sweeps override this per run
+  deterministic_torch: true  # slower but exactly reproducible

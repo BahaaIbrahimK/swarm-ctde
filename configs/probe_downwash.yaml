@@ -1,0 +1,106 @@
+# =============================================================================
+#  EXPERIMENT: DOWNWASH CHARACTERISATION PROBE
+# =============================================================================
+#  PHASE 1 EXIT ARTIFACT (Charter §5).
+#
+#  PURPOSE
+#  -------
+#  This is a PREMISE CHECK, not a learning experiment. There is no RL here.
+#
+#  Our entire paper rests on one physical assumption:
+#
+#      "Downwash creates enough inter-agent coupling that a teammate-aware
+#       critic has something real to explain."
+#
+#  If that is false at our chosen spacings, then Claim 1 and Claim 2 both die,
+#  and no amount of good MAPPO code can save them. So we test it FIRST, cheaply,
+#  in week 3 -- rather than expensively in month 5.
+#
+#  WHAT IT MEASURES
+#  ----------------
+#  Place two drones, one above the other. Sweep their separation. Measure the
+#  force the upper drone's downwash exerts on the lower one.
+#
+#  WHAT THE OUTPUT IS USED FOR
+#  ---------------------------
+#   1. Premise check      -> is the coupling physically real at all?
+#   2. Coupling horizon   -> at what separation does downwash become negligible?
+#                            This predicts WHERE k* should sit (Charter §1.5).
+#   3. Spacing calibration-> which formation spacings should Claim 2 use?
+#                            We want spacings spanning weak -> strong coupling.
+# =============================================================================
+
+_base_: base.yaml
+
+probe:
+  # ---------------------------------------------------------------------------
+  #  VERTICAL SEPARATION SWEEP
+  # ---------------------------------------------------------------------------
+  #  Distances (metres) to place the lower drone BELOW the upper one.
+  #  A Crazyflie is ~0.09 m across, so 0.10 m is roughly one body-length --
+  #  very tight -- while 1.50 m should be far enough that downwash has decayed
+  #  to nothing. We expect a steep falloff somewhere in between; finding that
+  #  knee is the point of the sweep.
+  # ---------------------------------------------------------------------------
+  #  CALIBRATED 23 Aug 2026 after a first probe run. See docs/downwash_model_notes.md.
+  #
+  #  The Zhou/DSL model gives a downwash force of
+  #        alpha = DW1 * (prop_radius / (4*dz))^2
+  #  which at dz=0.15 m is 3.37 N -- about 12.7x the drone's own weight
+  #  (0.265 N). At such spacings the lower drone is not perturbed, it is
+  #  overwhelmed: it simply falls, and drift saturates at whatever distance it
+  #  covers in the measurement window. That produces a FLAT, distance-
+  #  independent reading which looks like "no coupling" but is actually
+  #  "coupling far too strong to measure this way".
+  #
+  #  We therefore sweep the range where the force is a genuine perturbation
+  #  rather than a catastrophe. Force at these separations:
+  #        0.60 m -> 0.211 N (0.80x weight)
+  #        1.00 m -> 0.076 N (0.29x weight)
+  #        2.00 m -> 0.019 N (0.07x weight)
+  #  This spans "strong" to "negligible", which is exactly the contrast the
+  #  coupling-horizon estimate needs.
+  vertical_separations_m: [0.60, 0.70, 0.80, 0.90, 1.00, 1.20, 1.50, 2.00, 2.50]
+
+  # ---------------------------------------------------------------------------
+  #  HORIZONTAL OFFSET SWEEP
+  # ---------------------------------------------------------------------------
+  #  Downwash is modelled as a Gaussian centred directly beneath the upper
+  #  drone, so it should be strongest at 0.0 offset and fall away sideways.
+  #  Sweeping this tells us how precisely aligned drones must be to interact,
+  #  which matters for designing the formation geometry in Phase 2.
+  # ---------------------------------------------------------------------------
+  horizontal_offsets_m: [0.00, 0.05, 0.10, 0.15, 0.20, 0.30]
+
+  # ---------------------------------------------------------------------------
+  #  MEASUREMENT PROTOCOL
+  # ---------------------------------------------------------------------------
+  # Physics steps to let the simulation settle before recording. The rotor
+  # wake needs a moment to develop; measuring immediately would read transients.
+  #
+  # SHORT ON PURPOSE (0.25 s): downwash here is strong enough to accelerate the
+  # lower drone appreciably. A long settle lets it fall far enough to leave the
+  # near-field, so we would be measuring a different geometry than the one we
+  # set. Short settle keeps the drones near their commanded separation.
+  settle_steps: 60         # = 0.25 s at 240 Hz
+
+  # Physics steps to average the measurement over, after settling.
+  # Also short, for the same reason: we want the INSTANTANEOUS response at a
+  # known separation, not accumulated free-fall.
+  #
+  # NOTE: with a short window, mean vertical VELOCITY (lower_drone_mean_vz_ms)
+  # is the more sensitive readout, since velocity responds before displacement
+  # accumulates. Prefer it when comparing weak-coupling points.
+  measure_steps: 60        # = 0.25 s at 240 Hz
+
+  # Both drones are commanded to hold hover RPM during the probe, so any
+  # vertical deviation of the lower drone is attributable to downwash rather
+  # than to its own control action.
+  hold_hover_rpm: true
+
+output:
+  # Subdirectory under results_root for this probe's artifacts.
+  subdir: "phase1_downwash_probe"
+  # Filenames for the generated artifacts.
+  csv_name: "downwash_measurements.csv"
+  plot_name: "downwash_force_vs_separation.png"
